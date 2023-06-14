@@ -11,7 +11,6 @@ const App = () => {
         const FIT = ["cover", "contain"];
 
         const img = await getImgRandom();
-        console.log(img);
 
         setMoveableComponents([
             ...moveableComponents,
@@ -19,8 +18,6 @@ const App = () => {
                 id: Math.floor(Math.random() * Date.now()),
                 top: 0,
                 left: 0,
-                bottom: 0,
-                right: 0,
                 width: 100,
                 height: 100,
                 img,
@@ -32,7 +29,6 @@ const App = () => {
     };
 
     const updateMoveable = (id, newComponent, updateEnd = false) => {
-        console.log(newComponent);
         const updatedMoveables = moveableComponents.map((moveable, i) => {
             if (moveable.id === id) {
                 return { id, ...newComponent, updateEnd };
@@ -43,7 +39,6 @@ const App = () => {
     };
 
     const handleResizeStart = (index, e) => {
-        console.log("e", e.direction);
         // Check if the resize is coming from the left handle
         const [handlePosX, handlePosY] = e.direction;
         // 0 => center
@@ -68,7 +63,6 @@ const App = () => {
             const randomId = Math.floor(Math.random() * 4000)
             const response = await fetch (`https://jsonplaceholder.typicode.com/photos/${randomId}`);
             const data = await response.json();
-            console.log(data);
             return data.url;
         } catch (err) {
             throw new Error(err);
@@ -123,8 +117,6 @@ const Component = ({
     updateMoveable,
     top,
     left,
-    bottom,
-    right,
     width,
     height,
     index,
@@ -141,8 +133,6 @@ const Component = ({
     const [nodoReferencia, setNodoReferencia] = useState({
         top,
         left,
-        bottom,
-        right,
         width,
         height,
         index,
@@ -156,17 +146,9 @@ const Component = ({
     let parentBounds = parent?.getBoundingClientRect();
 
     const onDrag = (e) => {
-        console.log(e.bottom)
-        top = e.top < 0 ? 0 : e.top;
-        left = e.left < 0 ? 0 : e.left;
-        bottom = e.bottom < 0 ? 0 : e.bottom;
-        right = e.right < 0 ? 0 : e.right;
-
         updateMoveable(id, {
-            top,
-            left,
-            bottom,
-            right,
+            top: e.top,
+            left: e.left,
             width,
             height,
             img,
@@ -188,16 +170,9 @@ const Component = ({
         if (positionMaxLeft > parentBounds?.width)
             newWidth = parentBounds?.width - left;
 
-        top = e.top < 0 ? 0 : e.top;
-        left = e.left < 0 ? 0 : e.left;
-        bottom = e.bottom < 0 ? 0 : e.bottom;
-        right = e.right < 0 ? 0 : e.right;
-
         updateMoveable(id, {
             top,
             left,
-            bottom,
-            right,
             width: newWidth,
             height: newHeight,
             img,
@@ -242,23 +217,12 @@ const Component = ({
 
         const absoluteTop = top; // top + beforeTranslate[1]; se sumaba extra la posicion absoluta del elemento
         const absoluteLeft = left; // left + beforeTranslate[0]; se sumaba extra la posicion absoluta del elemento
-        const absoluteBottom = bottom; 
-        const absoluteRight = right; 
-
-        console.log(newHeight);
-        console.log(parentBounds?.height);
-
-        console.log(newWidth);
-        console.log(parentBounds?.width);
-
 
         updateMoveable(
             id,
             {
                 top: absoluteTop,
                 left: absoluteLeft,
-                bottom: absoluteBottom,
-                right: absoluteRight,
                 width: newWidth,
                 height: newHeight,
                 img,
@@ -279,8 +243,6 @@ const Component = ({
                     position: "absolute",
                     top: top,
                     left: left,
-                    bottom: bottom,
-                    right: right,
                     width: width,
                     height: height,
                     // background: color,
